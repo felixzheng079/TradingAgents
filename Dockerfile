@@ -19,9 +19,12 @@ COPY --from=builder /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN useradd --create-home appuser
-USER appuser
-WORKDIR /home/appuser/app
 
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+WORKDIR /home/appuser/app
 COPY --from=builder --chown=appuser:appuser /build .
 
-ENTRYPOINT ["tradingagents"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["tradingagents"]
